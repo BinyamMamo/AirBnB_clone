@@ -27,13 +27,12 @@ class BaseModel:
             if (key != "__class__"):
                 obj[key] = value
         new_obj = json.loads(json.dumps(obj))
-        
+
         for key, value in new_obj.items():
             if (key == "updated_at" or key == "created_at"):
                 value = datetime.strptime(str(value), "%Y-%m-%dT%H:%M:%S.%f")
             setattr(self, key, value)
-        print(self.to_dict())
-
+        # print(self.to_dict())
 
     def save(self):
         """ saves this instance to storage"""
@@ -46,7 +45,7 @@ class BaseModel:
         this_dict = {}
         this_dict["__class__"] = self.__class__.__name__
         self_dict = self.__dict__
-        
+
         for key, value in self_dict.items():
             if (key == "updated_at" or key == "created_at"):
                 # == value.date() + "T" + value.time()
@@ -59,6 +58,7 @@ class BaseModel:
         """ returns a string representation of this instance"""
         # return ("[{}] ({}) {}\
         #         ".format(self.__class__.__name__, self.id, self.__dict__))
+
 
 bm = BaseModel(name="Bini", age=20, created_at="2017-09-28T21:03:54.052298")
 print("-----------")
