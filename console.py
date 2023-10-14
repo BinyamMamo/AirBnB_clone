@@ -1,12 +1,127 @@
 #!/usr/bin/python3
+"""
+CLI for the airbnb clone
+"""
 
+import cmd
 import models
+import shlex
 from models.base_model import BaseModel
-# from models.base_model import BaseModel
 
-# if __name__ == "__main__":
-bm = BaseModel(name="Bini", age=20, created_at="2017-09-28T21:03:54.052298")
-print("-----------")
-bm.save()
-# b = BaseModel()
-# print("-----------")
+
+class HBNBCommand(cmd.Cmd):
+    # intro = "Welcome to the hbnb shell. Type help or ? to list commands\n"
+    prompt = "(hbnb) "
+
+    __classes = {
+        "BaseModel": BaseModel
+        # "Amenity": Amenity,
+        # "City": City,
+        # "Place": Place,
+        # "Review": Review,
+        # "State": State,
+        # "User": User
+    }
+
+    def do_create(self, line):
+        """ creates an instance of BaseModel"""
+        __class_name = line
+        if (not len(line)):
+            print("** class name missing **")
+            return
+        if (self.__classes.get(line) is None):
+            print("** class doesn't exist **")
+            return
+        inst = self.__classes[__class_name]()
+        inst.save()
+        print(inst.id)
+    
+    def do_show(self, line):
+        checked = self.ok(self, line)
+        if (checked[0]):
+            obj = checked[1]
+            print(obj)
+
+    def do_destroy(self, line):
+        checked = self.ok(self, line)
+        if (checked[0]):
+            obj = checked[1]
+            key = checked[2]
+            models.storage.all().pop(key)
+            models.storage.save()
+            # print(del obj)  # doesn't delete it from storage
+
+    def do_all(self, line):
+        """ prints all stored objects in a string format"""
+        if (len(line) and self.__classes.get(line) is None):
+            print("** class doesn't exist **")
+            return
+        all_objs = []
+        objs = models.storage.all()
+        for key, obj in objs.items():
+            if (not len(line)):
+                all_objs.append(str(obj))
+            elif (line == key.split(".")[0]):
+                all_objs.append(str(obj))
+        print(all_objs)
+
+    def do_update(self, line):
+        """ updates attributes of the specified instance"""
+
+        checked = self.ok(self, line)
+        if (not checked[0]):
+            return
+
+        obj = checked[1]
+        key = checked[2]
+        args = shlex.split(line)
+        if (not len(args) > 2):
+            print("** attribute name missing **")
+            return
+        attr = args[2]
+
+        if (not len(args) > 3):
+            print("** value missing **")
+            return
+        value = args[3]  # int, float and stuff not handled yet
+        setattr(obj, attr, value)
+        models.storage.save()
+        # print("The type of the value is: ", type(value))
+        # print(obj)
+
+    def do_EOF(self, line):
+        """  EOF - closes the shell when EOF(ctrl + D) detected"""
+        print("")  # to be removed for the checker
+        return True
+    def do_quit(self, line):
+        """  Quit command to exit the program"""
+        print("")  # to be removed for the checker
+        return True
+    
+    @staticmethod
+    def ok(self, line):
+        params = line.split(" ")
+        
+        if (not len(line)):
+            print("** class name missing **")
+            return False
+        if (self.__classes.get(params[0]) is None):
+            print("** class doesn't exist **")
+            return [False, None]
+        class_name = params[0]
+        
+        if (len(params) < 2):
+            print("** instance id missing **")
+            return [False, None]
+        inst_id = params[1]
+
+        objs = models.storage.all()
+        key = class_name + "." + inst_id
+        obj = objs.get(key)
+        if (obj is None):
+            print("** no instance found **")
+            return [False, None]
+        return [True, obj, key]
+    
+if __name__ == "__main__":
+    HBNBCommand().cmdloop()

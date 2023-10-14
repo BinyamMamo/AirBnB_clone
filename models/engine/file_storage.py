@@ -1,7 +1,11 @@
 #!/usr/bin/python3
+"""
+stores a dictionary object to a json file
+"""
+
+import json
 
 from models.base_model import BaseModel
-import json
 
 class FileStorage():
     __file_path = "file.json"
