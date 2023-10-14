@@ -6,18 +6,23 @@ stores a dictionary object to a json file
 import json
 
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
+
 
 class FileStorage():
+    """ basic class for storage"""
     __file_path = "file.json"
     __objects = {}
-    def __init__(self, file_path):
-        """ initializes the file storage with the provided file path"""
-        self.__file_path = file_path
 
     def all(self):  # to be edited
         """ returns the objects dictionary"""
         return self.__objects
-    
+
     def new(self, obj):  # more of set(self, obj) adds an inst
         """ stores the object in a dictionary"""
 
@@ -35,20 +40,20 @@ class FileStorage():
 
         with open(self.__file_path, 'w') as jsonfile:
             json.dump(output, jsonfile)  # indent=4
-        
+
     def reload(self):
         """ loads objects from the json file storage"""
 
         __classes = {
-            "BaseModel": BaseModel
-            # "Amenity": Amenity,
-            # "City": City,
-            # "Place": Place,
-            # "Review": Review,
-            # "State": State,
-            # "User": User
+            "BaseModel": BaseModel,
+            "User": User,
+            "Place": Place,
+            "State": State,
+            "City": City,
+            "Amenity": Amenity,
+            "Review": Review
         }
-                
+
         try:
             with open(self.__file_path, 'r') as jsonfile:
                 objs = json.load(jsonfile)
@@ -56,5 +61,5 @@ class FileStorage():
                 __class_name = obj["__class__"]
                 __class = __classes[__class_name]
                 self.__objects[key] = __class(**obj)
-        except:
+        except Exception:
             pass

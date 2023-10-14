@@ -55,7 +55,7 @@ class TestBaseModel(unittest.TestCase):
         inst.name = "My_First_Model"
         inst.my_number = 89
         self.assertIs(type(inst), BaseModel)
-        
+
         attrs = {
             "id": str,
             "created_at": dt,
@@ -68,12 +68,5 @@ class TestBaseModel(unittest.TestCase):
         for attr, atype in attrs.items():
             with self.subTest("attribute type"):
                 self.assertIn(attr, inst.__dict__, "attribute not found")
-                self.assertIs(type(inst.__dict__[attr]), atype, "attribute type does not match")  # inappropriate attribite type
-
-
-    # def test_dt_attr(self):
-    #     """ Tests if updated_at and created_at are working well"""
-    #     inst = BaseModel()
-    #     self.assertEqual(inst.created_at, inst.updated_at)
-
-            
+                self.assertIs(type(inst.__dict__[attr]), atype,
+                              "attribute type does not match")

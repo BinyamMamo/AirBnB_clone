@@ -10,6 +10,7 @@ import uuid
 
 from datetime import datetime
 
+
 class BaseModel:
     """ contains methods basis for the city, place and amenity classes"""
 
@@ -62,4 +63,3 @@ class BaseModel:
         """ returns a string representation of this instance"""
         return ("[{}] ({}) {}".format(self.__class__.__name__,
                                       self.id, self.__dict__))
-

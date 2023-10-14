@@ -7,6 +7,12 @@ import cmd
 import models
 import shlex
 from models.base_model import BaseModel
+from models.user import User
+from models.place import Place
+from models.state import State
+from models.city import City
+from models.amenity import Amenity
+from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
@@ -14,17 +20,17 @@ class HBNBCommand(cmd.Cmd):
     prompt = "(hbnb) "
 
     __classes = {
-        "BaseModel": BaseModel
-        # "Amenity": Amenity,
-        # "City": City,
-        # "Place": Place,
-        # "Review": Review,
-        # "State": State,
-        # "User": User
+        "BaseModel": BaseModel,
+        "User": User,
+        "Place": Place,
+        "State": State,
+        "City": City,
+        "Amenity": Amenity,
+        "Review": Review
     }
 
     def do_create(self, line):
-        """ creates an instance of BaseModel"""
+        """ Creates an instance of a specified class"""
         __class_name = line
         if (not len(line)):
             print("** class name missing **")
@@ -37,12 +43,14 @@ class HBNBCommand(cmd.Cmd):
         print(inst.id)
     
     def do_show(self, line):
+        """ Prints the string representation of an instance"""
         checked = self.ok(self, line)
         if (checked[0]):
             obj = checked[1]
             print(obj)
 
     def do_destroy(self, line):
+        """ Deletes an instance"""
         checked = self.ok(self, line)
         if (checked[0]):
             obj = checked[1]
@@ -52,7 +60,7 @@ class HBNBCommand(cmd.Cmd):
             # print(del obj)  # doesn't delete it from storage
 
     def do_all(self, line):
-        """ prints all stored objects in a string format"""
+        """ Prints all instances or instances of a specified class"""
         if (len(line) and self.__classes.get(line) is None):
             print("** class doesn't exist **")
             return
@@ -66,8 +74,7 @@ class HBNBCommand(cmd.Cmd):
         print(all_objs)
 
     def do_update(self, line):
-        """ updates attributes of the specified instance"""
-
+        """ Updates attributes of an instance"""
         checked = self.ok(self, line)
         if (not checked[0]):
             return
@@ -90,16 +97,18 @@ class HBNBCommand(cmd.Cmd):
         # print(obj)
 
     def do_EOF(self, line):
-        """  EOF - closes the shell when EOF(ctrl + D) detected"""
+        """ Closes the shell when EOF (ctrl + D) is detected"""
         print("")  # to be removed for the checker
         return True
+
     def do_quit(self, line):
-        """  Quit command to exit the program"""
+        """ Quits the program"""
         print("")  # to be removed for the checker
         return True
     
     @staticmethod
     def ok(self, line):
+        """ Checks if the input is valid"""
         params = line.split(" ")
         
         if (not len(line)):
