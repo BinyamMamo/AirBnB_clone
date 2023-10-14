@@ -41,7 +41,7 @@ class HBNBCommand(cmd.Cmd):
         inst = self.__classes[__class_name]()
         inst.save()
         print(inst.id)
-    
+
     def do_show(self, line):
         """ Prints the string representation of an instance"""
         checked = self.ok(self, line)
@@ -105,12 +105,12 @@ class HBNBCommand(cmd.Cmd):
         """ Quits the program"""
         print("")  # to be removed for the checker
         return True
-    
+
     @staticmethod
     def ok(self, line):
         """ Checks if the input is valid"""
         params = line.split(" ")
-        
+
         if (not len(line)):
             print("** class name missing **")
             return False
@@ -118,7 +118,7 @@ class HBNBCommand(cmd.Cmd):
             print("** class doesn't exist **")
             return [False, None]
         class_name = params[0]
-        
+
         if (len(params) < 2):
             print("** instance id missing **")
             return [False, None]
@@ -131,6 +131,7 @@ class HBNBCommand(cmd.Cmd):
             print("** no instance found **")
             return [False, None]
         return [True, obj, key]
-    
+
+
 if __name__ == "__main__":
     HBNBCommand().cmdloop()
