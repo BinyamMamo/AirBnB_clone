@@ -89,6 +89,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_update(self, line):
         """ Updates attributes of an instance"""
+
         checked = self.ok(self, line)
         if (not checked[0]):
             return
@@ -96,46 +97,47 @@ class HBNBCommand(cmd.Cmd):
         obj = checked[1]
         key = checked[2]
 
-        # HERE IS WHERE
-        args = []
+        list_of_args = []
         if (" {" in line):
             attr = line.split(" {")[1]
             attr = attr.replace("}", "")
-            attr = attr.split(" ")
+            attr = shlex.split(attr)
             attr_args = []
-            print(attr)
             class_name, inst_id = key.split(".")
-            print("-------------")
             for i in range(0, len(attr), 2):
                 at = attr[i].strip(":")
                 value = attr[i + 1].strip(":")
                 attr_args.append([class_name, inst_id, at, value])
-            print(attr_args)
-            # str()
+            for attr in attr_args:  # int, float and stuff not handled yet
+                b = " ".join(str("\"{}\"".format(str(n)) if " " in str(n)
+                                 else n.strip("\"\'")) for n in attr)
+                list_of_args.append(shlex.split(b))
         else:
-            args = shlex.split(line)
-        if (not len(args) > 2):
-            print("** attribute name missing **")
-            return
-        attr = args[2]
+            list_of_args.append(shlex.split(line))
 
-        if (not len(args) > 3):
-            print("** value missing **")
-            return
-        value = args[3]  # int, float and stuff not handled yet
-        setattr(obj, attr, value)
-        models.storage.save()
-        # print("The type of the value is: ", type(value))
-        # print(obj)
+        for args in list_of_args:
+            if args is None:
+                continue
+            if (not len(args) > 2):
+                print("** attribute name missing **")
+                return
+            attr = args[2]
+
+            if (not len(args) > 3):
+                print("** value missing **")
+                return
+            value = args[3]  # int, float and stuff not handled yet
+            setattr(obj, attr, value)
+            models.storage.save()
 
     def do_EOF(self, line):
         """ Closes the shell when EOF (ctrl + D) is detected"""
-        print("")  # to be removed for the checker
+        # print("")  # to be removed for the checker
         return True
 
     def do_quit(self, line):
         """ Quits the program"""
-        print("")  # to be removed for the checker
+        # print("")  # to be removed for the checker
         return True
 
     def precmd(self, line):
@@ -150,8 +152,6 @@ class HBNBCommand(cmd.Cmd):
                     command, others = others.split("(")
                     params = others.replace(")", "").replace(", ", " ")
                     line = command + " " + class_name + " " + params
-                    print("{} {} {}".format(command, class_name, params))
-        # print(line)
         return cmd.Cmd.precmd(self, line)
 
     def emptyline(self):
