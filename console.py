@@ -109,7 +109,7 @@ class HBNBCommand(cmd.Cmd):
     @staticmethod
     def ok(self, line):
         """ Checks if the input is valid"""
-        params = line.split(" ")
+        params = shlex.split(line)
 
         if (not len(line)):
             print("** class name missing **")
