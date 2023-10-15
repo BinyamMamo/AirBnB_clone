@@ -73,6 +73,20 @@ class HBNBCommand(cmd.Cmd):
                 all_objs.append(str(obj))
         print(all_objs)
 
+    def do_count(self, line):
+        """ counts all instances or instances of a specified class"""
+        if (len(line) and self.__classes.get(line) is None):
+            print("** class doesn't exist **")
+            return
+        all_objs = []
+        objs = models.storage.all()
+        for key, obj in objs.items():
+            if (not len(line)):
+                all_objs.append(str(obj))
+            elif (line == key.split(".")[0]):
+                all_objs.append(str(obj))
+        print(len(all_objs))
+
     def do_update(self, line):
         """ Updates attributes of an instance"""
         checked = self.ok(self, line)
@@ -81,7 +95,25 @@ class HBNBCommand(cmd.Cmd):
 
         obj = checked[1]
         key = checked[2]
-        args = shlex.split(line)
+
+        # HERE IS WHERE
+        args = []
+        if (" {" in line):
+            attr = line.split(" {")[1]
+            attr = attr.replace("}", "")
+            attr = attr.split(" ")
+            attr_args = []
+            print(attr)
+            class_name, inst_id = key.split(".")
+            print("-------------")
+            for i in range(0, len(attr), 2):
+                at = attr[i].strip(":")
+                value = attr[i + 1].strip(":")
+                attr_args.append([class_name, inst_id, at, value])
+            print(attr_args)
+            # str()
+        else:
+            args = shlex.split(line)
         if (not len(args) > 2):
             print("** attribute name missing **")
             return
@@ -105,6 +137,25 @@ class HBNBCommand(cmd.Cmd):
         """ Quits the program"""
         print("")  # to be removed for the checker
         return True
+
+    def precmd(self, line):
+        """ intercepts the cmd at precmd"""
+        if (len(line)):
+            if ("." in line):
+                args = line
+                if (" " in line):
+                    args = line.split(" ")[0]
+                if ("." in args):
+                    class_name, others = line.split(".")
+                    command, others = others.split("(")
+                    params = others.replace(")", "").replace(", ", " ")
+                    line = command + " " + class_name + " " + params
+                    print("{} {} {}".format(command, class_name, params))
+        # print(line)
+        return cmd.Cmd.precmd(self, line)
+
+    def emptyline(self):
+        return False
 
     @staticmethod
     def ok(self, line):
