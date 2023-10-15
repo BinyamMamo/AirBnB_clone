@@ -16,6 +16,7 @@ from models.review import Review
 
 
 class HBNBCommand(cmd.Cmd):
+    """ handles commands from the console"""
     # intro = "Welcome to the hbnb shell. Type help or ? to list commands\n"
     prompt = "(hbnb) "
 
@@ -132,12 +133,12 @@ class HBNBCommand(cmd.Cmd):
 
     def do_EOF(self, line):
         """ Closes the shell when EOF (ctrl + D) is detected"""
-        # print("")  # to be removed for the checker
+        # print("")  # to be removed for the checker MUST BE REMOVED
         return True
 
     def do_quit(self, line):
         """ Quits the program"""
-        # print("")  # to be removed for the checker
+        # print("")  # to be removed for the checker MUST BE REMOVED
         return True
 
     def precmd(self, line):
