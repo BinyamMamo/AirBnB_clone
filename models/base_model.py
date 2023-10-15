@@ -61,5 +61,5 @@ class BaseModel:
 
     def __str__(self):
         """ returns a string representation of this instance"""
-        return ("[{}] ({}) {}".format(self.__class__.__name__,
+        print("[{}] ({}) {}".format(self.__class__.__name__,
                                       self.id, self.__dict__))
