@@ -39,14 +39,14 @@ class BaseModel:
 
     def save(self):
         """ saves this instance to storage"""
+
         self.updated_at = datetime.utcnow()
         models.storage.new(self)  # not sure if needed here
         models.storage.save()
 
-        # print(models.storage.all())
-
     def to_dict(self):
         """ converts this instance to a json format"""
+
         this_dict = {}
         this_dict["__class__"] = self.__class__.__name__
         self_dict = self.__dict__
