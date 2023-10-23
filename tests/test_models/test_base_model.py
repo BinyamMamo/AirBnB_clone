@@ -17,6 +17,7 @@ class TestBaseModelDocs(unittest.TestCase):
 
     def test_func_docs(self):
         """ Tests if all methods of BaseModel are documented"""
+        print(self.__funcs)
         for func in self.__funcs:
             with self.subTest("undocumented function", function=func):
                 self.assertIsNot(func[1].__doc__, None,
